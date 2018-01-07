@@ -1,0 +1,18 @@
+name: Freeze
+author: MarcTheDev
+version: 1.2
+main: me.freeze.plugin.Main
+commands:
+     freeze:
+          description: Freeze a specific user
+          usage: /<command>
+     unfreeze:
+          description: Unfreeze a specific user that is frozen
+          usage: /<command>
+permissions:
+     freeze.command:
+          description: Permission
+          default: op
+     unfreeze.command:
+          description: Permission
+          default: op
