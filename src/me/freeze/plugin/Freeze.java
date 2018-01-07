@@ -5,12 +5,28 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Freeze extends JavaPlugin implements Listener {
+    public List<String> muted = new ArrayList<String>();
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
+        Player p = e.getPlayer();
+        for(String s : muted) {
+            if(muted.contains(p.getName())) {
+                e.setCancelled(true);
+                p.sendMessage(ChatColor.RED + "Shh... your muted");
+            }
+        }
+    }
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(cmd.getName().equalsIgnoreCase("freeze")) {
             Player p = (Player) sender;
@@ -24,6 +40,7 @@ public class Freeze extends JavaPlugin implements Listener {
                 if(args.length == 1 && user != null) {
                     user.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,Integer.MAX_VALUE, 255));
                     user.setWalkSpeed(0);
+                    muted.add(target);
                     // Just in case user is in flight ; no interference
                     user.setAllowFlight(false);
                     user.sendMessage(ChatColor.RED + "You have been frozen by " + ChatColor.GOLD + p.getName() + "!");
@@ -49,6 +66,7 @@ public class Freeze extends JavaPlugin implements Listener {
                 }
                 if(args.length == 1 && user != null) {
                     user.setWalkSpeed(1);
+                    muted.remove(target);
                     user.removePotionEffect(PotionEffectType.JUMP);
                     user.sendMessage(ChatColor.GREEN + "You are now unfrozen!");
                     p.sendMessage(ChatColor.GREEN + "Successfully unfroze " + target);
